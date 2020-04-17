@@ -1,57 +1,62 @@
 package com.company;
-import java.util.*;
+
 public class Main {
 
     public static void main(String[] args) {
 	// write your code here
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int input[] = new int[n];
-        for(int i = 0 ; i<n ; i++){
-            input[i] = sc.nextInt();
-        }
-        mergeSort(input);
-        for(int i = 0 ; i<n ; i++){
-            System.out.println(input[i]);
-        }
-    }
-    private static void mergeSort(int[] input) {
-        int len =  input.length;
-        if(len == 1){
-            return;
-        }
-        int m = (len-1)/2;
-        int n1 = m+1;
-        int n2 = len-m-1;
-        int s1[] = new int[n1];
-        int s2[] = new int[n2];
-        for(int i = 0;i<n1;i++){
-            s1[i] = input[i];
-        }
-        for(int i = m+1;i<len;i++){
-            s2[i-m-1] = input[i];
-        }
-        mergeSort(s1);
-        mergeSort(s2);
-        merge(s1,s2,input);
+        int[][] maze = {{1,1,0},{1,1,0},{0,1,1}};
+        int n = maze.length;
+        int[][] path = new int[n][n];
+        printPath(maze,0,0,path);
     }
 
-    private static void merge(int[] s1, int[] s2, int[] input) {
-        int i =0;
-        int j =0;
-        int k = 0;
-        while(i!=s1.length && j!=s2.length){
-            if(s1[i]>s2[j]){
-                input[k++] = s2[j++];
-            }else{
-                input[k++] = s1[i++];
+    private static boolean ratInMazeSolve(int[][] maze) {
+        int n = maze.length;
+        int[][] path = new int[n][n];
+        return mazeSolver(maze,0,0,path);
+    }
+
+    private static boolean mazeSolver(int[][] maze, int i, int j, int[][] path) {
+        int n = maze.length;
+        if(i<0 || j<0 || i>=n || j>=n || maze[i][j]==0 ||path[i][j]==1){
+            return false;
+        }
+        path[i][j] = 1;
+        if(i==n-1 && j==n-1) {
+            return true;
+        }
+        boolean top =  mazeSolver(maze,i-1,j,path);
+        boolean right = mazeSolver(maze,i,j+1,path);
+        boolean down = mazeSolver(maze,i+1,j,path);
+        boolean left = mazeSolver(maze,i,j-1,path);
+        return top || right || down || left;
+    }
+
+    private static void printPath(int[][] maze, int i, int j, int[][] path) {
+        int n = maze.length;
+        if(i<0 || j<0 || i>=n || j>=n || maze[i][j]==0 ||path[i][j]==1){
+            return;
+        }
+        path[i][j] = 1;
+
+        if(i==n-1 && j==n-1) {
+            for (int r=0;r<n;r++){
+                for(int c=0;c<n;c++) {
+                    System.out.print(path[r][c] + " ");
+                }
             }
+            System.out.println();
+            path[i][j] = 0;
+            return;
         }
-        for(;i<s1.length;i++){
-            input[k++] = s1[i];
-        }
-        for(;j<s2.length;j++){
-            input[k++]=s2[j];
-        }
+        //Top
+        printPath(maze,i-1,j,path);
+        //Right
+        printPath(maze,i,j+1,path);
+        //Down
+        printPath(maze,i+1,j,path);
+        //Left
+        printPath(maze,i,j-1,path);
+        path[i][j] = 0;
     }
 }
