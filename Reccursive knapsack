@@ -1,0 +1,15 @@
+public static int knapsack(int[] value,int[] weight,int maxWt,int i){
+if(i>=n){
+return 0;
+}
+int myAns;
+if(weight[i]>maxWt){
+myAns =  knapsack(value,weight,maxWt,i+1);
+}
+else{
+int ans1 = knapsack(value,weight,maxWt,i+1);
+int ans2 = value[i] + knapsack(value,weight,maxWt-weight[i],i);
+myAns  = Math.max(ans1,ans2);
+}
+return myAns;
+}
