@@ -1,62 +1,30 @@
 package com.company;
-
+import java.util.Scanner;
 public class Main {
-
-    public static void main(String[] args) {
-	// write your code here
-        int[][] maze = {{1,1,0},{1,1,0},{0,1,1}};
-        int n = maze.length;
-        int[][] path = new int[n][n];
-        printPath(maze,0,0,path);
-    }
-
-    private static boolean ratInMazeSolve(int[][] maze) {
-        int n = maze.length;
-        int[][] path = new int[n][n];
-        return mazeSolver(maze,0,0,path);
-    }
-
-    private static boolean mazeSolver(int[][] maze, int i, int j, int[][] path) {
-        int n = maze.length;
-        if(i<0 || j<0 || i>=n || j>=n || maze[i][j]==0 ||path[i][j]==1){
-            return false;
-        }
-        path[i][j] = 1;
-        if(i==n-1 && j==n-1) {
-            return true;
-        }
-        boolean top =  mazeSolver(maze,i-1,j,path);
-        boolean right = mazeSolver(maze,i,j+1,path);
-        boolean down = mazeSolver(maze,i+1,j,path);
-        boolean left = mazeSolver(maze,i,j-1,path);
-        return top || right || down || left;
-    }
-
-    private static void printPath(int[][] maze, int i, int j, int[][] path) {
-        int n = maze.length;
-        if(i<0 || j<0 || i>=n || j>=n || maze[i][j]==0 ||path[i][j]==1){
-            return;
-        }
-        path[i][j] = 1;
-
-        if(i==n-1 && j==n-1) {
-            for (int r=0;r<n;r++){
-                for(int c=0;c<n;c++) {
-                    System.out.print(path[r][c] + " ");
-                }
+    private static void dfsTravel(int[][] adjMatrix,int cV,boolean[] visited){
+        System.out.print(cV+" ");
+        visited[cV] = true;
+        for(int i=0;i<adjMatrix.length;i++){
+            if(adjMatrix[cV][i]==1 && visited[i]==false){
+                dfsTravel(adjMatrix,i,visited);
             }
-            System.out.println();
-            path[i][j] = 0;
-            return;
         }
-        //Top
-        printPath(maze,i-1,j,path);
-        //Right
-        printPath(maze,i,j+1,path);
-        //Down
-        printPath(maze,i+1,j,path);
-        //Left
-        printPath(maze,i,j-1,path);
-        path[i][j] = 0;
+    }
+    private static void dfsTraversal(int[][] adjMatrix){
+        boolean[] visited = new boolean[adjMatrix.length];
+        dfsTravel(adjMatrix,0,visited);
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int e = sc.nextInt();
+        int[][] adjMatrix = new int[n][n];
+        for(int i=0;i<e;i++){
+            int v1  = sc.nextInt();
+            int v2 = sc.nextInt();
+            adjMatrix[v1][v2] = 1;
+            adjMatrix[v2][v1] = 1;
+        }
+        dfsTraversal(adjMatrix);
     }
 }
