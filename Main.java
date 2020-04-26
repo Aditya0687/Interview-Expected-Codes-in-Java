@@ -1,30 +1,68 @@
 package com.company;
-import java.util.Scanner;
+import java.util.*;
 public class Main {
-    private static void dfsTravel(int[][] adjMatrix,int cV,boolean[] visited){
-        System.out.print(cV+" ");
-        visited[cV] = true;
-        for(int i=0;i<adjMatrix.length;i++){
-            if(adjMatrix[cV][i]==1 && visited[i]==false){
-                dfsTravel(adjMatrix,i,visited);
+    public static class Edge implements Comparable<Edge>
+    {
+        int v1;
+        int v2;
+        int weight;
+        public Edge(int v1,int v2,int weight){
+            this.v1 = v1;
+            this.v2 = v2;
+            this.weight = weight;
+        }
+
+        public int compareTo(Edge o) {
+            return this.weight - o.weight;
+        }
+    }
+    public static Edge[] kruskalsAlgo(Edge[] edges,int[] parent,int V) {
+        Edge mst[] = new Edge[V-1];
+        int count = 0 ;
+        int i = 0 ;
+        while (count!=V-1){
+            Edge cE = edges[i++];
+            int v1Parent = findParent(cE.v1,parent);
+            int v2Parent = findParent(cE.v2,parent);
+            if(v1Parent!=v2Parent){
+                //INCLUDE THE CURRENT EDGE
+                mst[count] = cE;
+                parent[v1Parent] = v2Parent;
+                count++;
             }
         }
+
+        return mst;
     }
-    private static void dfsTraversal(int[][] adjMatrix){
-        boolean[] visited = new boolean[adjMatrix.length];
-        dfsTravel(adjMatrix,0,visited);
+
+    public static int findParent(int v,int[] parent) {
+        if(v==parent[v]){
+            return v;
+        }
+           return findParent(parent[v],parent);
     }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int e = sc.nextInt();
-        int[][] adjMatrix = new int[n][n];
-        for(int i=0;i<e;i++){
-            int v1  = sc.nextInt();
+        int V = sc.nextInt();
+        int E = sc.nextInt();
+        Edge[] edges = new Edge[E];
+        for(int i=0;i<E;i++){
+            int v1 = sc.nextInt();
             int v2 = sc.nextInt();
-            adjMatrix[v1][v2] = 1;
-            adjMatrix[v2][v1] = 1;
+            int weight = sc.nextInt();
+            Edge edge = new Edge(v1,v2,weight);
+            edges[i] = edge;
         }
-        dfsTraversal(adjMatrix);
+        Arrays.sort(edges);
+        int[] parents = new int[V];
+        for(int j =0 ;j<V;j++){
+            parents[j] = j;
+        }
+        Edge[] res = kruskalsAlgo(edges,parents,V);
+        for (Edge re : res) {
+            System.out.println(re.v1 + " " + re.v2 + " " + re.weight);
+        }
     }
 }
+
