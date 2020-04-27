@@ -1,7 +1,18 @@
+/*
+Sample Input:
+4 4
+0 1 3
+0 3 5
+1 2 1
+2 3 8
+Sample Output:
+1 2 1
+0 1 3
+0 3 5
+*/
+
 package com.company;
-
 import java.util.Scanner;
-
 public class Prims {
     public static int findMinVertex(boolean[] visited,int[] weight){
         int myAns = -1;
